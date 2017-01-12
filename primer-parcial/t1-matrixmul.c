@@ -59,15 +59,20 @@ int main(){
 	{
 	  C[i][j]+=mata[i][k]*matb[k][j];
 	}
-  
+
+  FILE *cf;
+  cf=fopen("result-matrix.txt", "w");
   printf("\nMultiplication Of Two Matrices : \n");
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
       printf(" %f", C[i][j]);
+      fprintf(cf, "%f | ",  C[i][j]);
     }
     printf("\n");
+    fprintf(cf, "\n");
+    
   }
-
+  printf("Your file with the new matrix is already created! \n you can look for it as result-matrix.txt");
   
   return 0;
 }
