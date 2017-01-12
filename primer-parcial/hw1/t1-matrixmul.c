@@ -1,3 +1,9 @@
+/*
+Margot Duek Kalach 
+Advanced programming
+Matrix multiplication 
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #define CHUNK 1024 /* read 1024 bytes at the time */
@@ -36,7 +42,6 @@ int main(){
     for(int j = 0; j < 3 ; j++){
       if(!fscanf(b, "%f", &matb[i][j]))
 	break;
-      //printf("%lf\n", matb[i][j]);
     }
   }
   fclose(b);
@@ -58,17 +63,22 @@ int main(){
       for(int k=0; k < 3; ++k)
 	{
 	  C[i][j]+=mata[i][k]*matb[k][j];
-	  printf("%f \n" , C[i][j]);
 	}
+
   
+  FILE *cf;
+  cf=fopen("result-matrix.txt", "w");
   printf("\nMultiplication Of Two Matrices : \n");
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
-      printf(" %d ", C[i][j]);
+      printf(" %f", C[i][j]);
+      fprintf(cf, "%f | ",  C[i][j]);
     }
     printf("\n");
+    fprintf(cf, "\n");
+    
   }
-
+  printf("Your file with the new matrix is already created! \n you can look for it as result-matrix.txt");
   
   return 0;
 }
