@@ -1,0 +1,51 @@
+/*
+Margot Duek Kalach 
+Advanced programming 
+Word finder 
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+//#include <cstring>
+
+int count(char *word, char *sentence, int size_word, int size_sentence);
+
+int main(){
+  char sentence[29];
+  char word[4];
+
+  // Ask the user for a sentence and a word 
+  printf("Hello!\n give me a sentence:  ");
+  fgets (sentence, 100, stdin);
+  printf("give me the word you want to look for in the sentence:  ");
+  scanf("%10[^\n]",word);
+
+  int size_word = sizeof word / sizeof word[0];
+  int size_sentence = sizeof sentence / sentence[0];
+  count(word, sentence, 4, 29);
+  
+  return 0;
+}
+
+//Function to check how many times a word is in a sentence
+int count(char *word, char *sentence, int size_word, int size_sentence){
+  int i;
+  int words = 0;
+  int letters = 0;
+  // We loop through the sentence to look for the word 
+  for(i = 0; i < size_sentence; i++){
+    if(*(sentence+i) == word[0]){
+      int j;
+      for(j = 0; j < size_word; j++){
+	if(*(sentence+i+j) == word[j]){
+	  letters ++;
+	}
+      }
+      if(letters == size_word){
+	words ++;
+      }
+    }
+  }
+  printf("%d", words);
+  return words;
+}
