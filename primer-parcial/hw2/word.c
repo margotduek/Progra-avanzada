@@ -6,7 +6,6 @@ Word finder
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include <cstring>
 #include <string.h>
 #define SENTENCE 100
 #define WORD 10
@@ -35,7 +34,7 @@ int getInput(char *question, char *inputBuffer, int bufferLength)
   printf("%s  (Max %d characters)\n", question, bufferLength - 1);
   fgets(inputBuffer, bufferLength, stdin);
   int leng = 0;
-  // If there is 
+  // If there is an enter, return the length of the string 
   for(int i = 0; i < bufferLength; i++){
     if(inputBuffer[i] != '\n'){
       leng ++;
