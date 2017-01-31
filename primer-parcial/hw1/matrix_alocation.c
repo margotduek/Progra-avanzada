@@ -1,7 +1,7 @@
 /*
     Using dynamic memory to get space for a matrix of user specified size
     To check if there are memory leaks you can compile using the comand 
-    valgrind 
+    valgrind --leak-check=full name.c
 */
 
 #include <stdio.h>
