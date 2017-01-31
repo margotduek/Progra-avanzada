@@ -5,6 +5,8 @@ Turned picture
 Advanced programming
 */
 
+#include <string>
+
 struct matrix{
   int rows;
   int cols;
@@ -16,5 +18,5 @@ void free_matrix(int **picture, int rows);
 void fillRandomMatrix(int ** matrix, int rows, int cols);
 void print_matrix(int ** matrix, int rows, int cols);
 void turn_picture(int ** matrix, int rows, int cols);
-
- 
+void read_file(int **matrix, std::string file);
+void export_matrix(int **matrix, int rows, int cols);
