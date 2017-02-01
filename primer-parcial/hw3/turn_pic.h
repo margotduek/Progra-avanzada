@@ -10,7 +10,7 @@ Advanced programming
 struct matrix{
   int rows;
   int cols;
-  int ** mat = NULL;
+  int **mat;// = NULL;
 };
 
 int **create_matrix(int rows, int columns); 
@@ -20,5 +20,5 @@ void print_matrix(int ** matrix, int rows, int cols);
 void turn_picture(int ** matrix, int rows, int cols);
 void read_file(int **matrix, int cols, int rows);
 void export_matrix(int **matrix, int rows, int cols);
-int get_cols(int **matrix);
-int get_rows(int **matrix);
+int get_cols();
+int get_rows();

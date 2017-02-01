@@ -8,14 +8,14 @@ Advanced programming
 
 #include <stdio.h>
 #include "turn_pic.h"
-#include <cstdlib>
+#include <stdlib.h>
 
 
 int main(){
   struct matrix picture;
+  picture.cols = get_cols();
+  picture.rows = get_rows();
   picture.mat = create_matrix(picture.rows, picture.cols);
-  picture.cols = get_cols(picture.mat);
-  picture.rows = get_rows(picture.mat);
   read_file(picture.mat, picture.cols, picture.rows);
   //fillRandomMatrix(picture.mat, picture.rows, picture.cols);
   //print_matrix(picture.mat, picture.rows, picture.cols); 
@@ -25,7 +25,7 @@ int main(){
   return 0;
 }
 
-int get_cols(int **matrix){
+int get_cols(){
   FILE *a = fopen( "skull.ppm", "r");
   int cols;
   char buff[255];
@@ -40,7 +40,7 @@ int get_cols(int **matrix){
 }
 
 
-int get_rows(int **matrix){
+int get_rows(){
   FILE *a = fopen( "skull.ppm", "r");
   int rows;
   char buff[255];
@@ -62,10 +62,9 @@ void read_file(int **matrix, int cols, int rows){
   fgets(buff, 255, a);
   fgets(buff, 255, a);
   // saving the numbers of the file in a matrix
-  for(int i = 0; i < cols; i ++){
-    for(int j = 0; j < rows ; j++){
+  for(int i = 0; i < rows; i ++){
+    for(int j = 0; j < cols ; j++){
       if(!fscanf(a, "%d", &matrix[i][j]))
-	//printf("%d", matrix[i][j]);
 	break;
     }
   }
