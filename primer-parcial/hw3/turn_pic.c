@@ -24,6 +24,7 @@ int main(){
   return 0;
 }
 
+//Function to get the columns from a ppm file
 int get_cols(){
   FILE *a = fopen( "skull.ppm", "r");
   int cols;
@@ -38,7 +39,7 @@ int get_cols(){
   return cols;
 }
 
-
+//Function to get the rows from a ppm file
 int get_rows(){
   FILE *a = fopen( "skull.ppm", "r");
   int rows;
@@ -51,7 +52,7 @@ int get_rows(){
   return rows;
 }
 
-
+//Function to read a file and store it on a matrix
 void read_file(int **matrix, int cols, int rows){
   // Opening a file for reading 
   FILE *a = fopen( "skull.ppm", "r");
@@ -71,7 +72,7 @@ void read_file(int **matrix, int cols, int rows){
 
 }
 
-
+//Function to make the matrix dinamic
 int ** create_matrix(int rows, int cols)
 {
   int i;
@@ -83,7 +84,7 @@ int ** create_matrix(int rows, int cols)
 }
 
 
-
+//Function to fill a matrix 
 void fillRandomMatrix(int ** matrix, int rows, int cols)
 {
   int i, j;
@@ -98,6 +99,7 @@ void fillRandomMatrix(int ** matrix, int rows, int cols)
     }
 }
 
+//Function to invert the colors of a ppm picture
 void turn_picture(int ** matrix, int rows, int cols){
   int i, j;
   for(i = 0; i < rows; i++){
@@ -107,6 +109,7 @@ void turn_picture(int ** matrix, int rows, int cols){
   }
 }
 
+//Function to export a mmatrix to a ppm file 
 void export_matrix(int **matrix, int rows, int cols){
   int i, j;
   FILE *turned;
@@ -124,6 +127,7 @@ void export_matrix(int **matrix, int rows, int cols){
   }
 }
 
+//Function to print the matrix on the terminal
 void print_matrix(int ** matrix, int rows, int cols){
   int i, j;
 
@@ -139,7 +143,7 @@ void print_matrix(int ** matrix, int rows, int cols){
 }
 
 
-
+//Function to free the space we alocated with create_matrix()
 void free_matrix(int ** matrix, int rows)
 {
   
