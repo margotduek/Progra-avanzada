@@ -10,7 +10,7 @@ Advanced programming
 struct matrix{
   int rows;
   int cols;
-  int **mat;// = NULL;
+  int **mat;
 };
 
 int **create_matrix(int rows, int columns); 

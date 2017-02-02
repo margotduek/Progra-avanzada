@@ -11,17 +11,16 @@ Advanced programming
 #include <stdlib.h>
 
 
+
 int main(){
   struct matrix picture;
   picture.cols = get_cols();
   picture.rows = get_rows();
   picture.mat = create_matrix(picture.rows, picture.cols);
-  read_file(picture.mat, picture.cols, picture.rows);
-  //fillRandomMatrix(picture.mat, picture.rows, picture.cols);
-  //print_matrix(picture.mat, picture.rows, picture.cols); 
+  read_file(picture.mat, picture.cols, picture.rows); 
   turn_picture(picture.mat, picture.rows, picture.cols);
-  //print_matrix(picture.mat, picture.rows, picture.cols);
   export_matrix(picture.mat, picture.rows, picture.cols);
+  free_matrix(picture.mat, picture.rows);
   return 0;
 }
 
@@ -137,4 +136,17 @@ void print_matrix(int ** matrix, int rows, int cols){
       printf("\n");
     }
   printf("\n");
+}
+
+
+
+void free_matrix(int ** matrix, int rows)
+{
+  
+    int i;
+    for (i = 0; i < rows; i++) {
+        free(matrix[i]);
+    }
+  
+  free(matrix);
 }
