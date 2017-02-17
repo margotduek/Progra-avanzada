@@ -183,20 +183,19 @@ void closePipes(int pipe_out[], int pipe_in[])
 // Return: nothing
 void countUp(int pipe_out[], int pipe_in[])
 {
-  int number = 0;
 
-  //int result = 1;
-  
+  int go = 1;
   int range = 0;
   int inc = 0;
-  int dec = 0;
   int result = 0;
   int resultp = 0;
   char buffer[BUFFER_SIZE];
-
+  int keep_going = 1;
+  char *line = NULL;
+  
   printf("Enter the range: ");
   scanf("%d", &range);
-
+  
   printf("Enter the number to add: ");
   scanf("%d", &inc);
      
@@ -207,17 +206,24 @@ void countUp(int pipe_out[], int pipe_in[])
   write(pipe_out[1], buffer, strlen(buffer) + 1);
 
   
-  while (result >= 0){
-
-    resultp = resultp + inc;
+  while (keep_going){
+    // Send the range to the child
+    sprintf(buffer, "%d", go);
+    // Write all the characters in the buffer, and also the null character at the end
+    write(pipe_out[1], buffer, strlen(buffer) + 1);
     
     // Get the reply from the child
     read(pipe_in[0], buffer, BUFFER_SIZE);
     sscanf(buffer, "%d", &result);
     printf("%d - %d\n", resultp, result);
-
+    drawLine(line, range, resultp, range - result);
+    //printf("%s\n", line);
+    if(resultp < range){   
+      resultp = resultp + inc;
+    }else if(result <= 0 && resultp >=range){
+      keep_going = 0;
+    }
   }
-
 
 }
 
@@ -229,52 +235,50 @@ void countUp(int pipe_out[], int pipe_in[])
 // Return: nothing
 void countDown(int pipe_out[], int pipe_in[])
 {
-  
-      int range = 0;
-      int dec = 0;
-      int result = 0;
-      char buffer[BUFFER_SIZE];
+  int go = 1;
+  int range = 0;
+  int dec = 0;
+  int result = 0;
+  char buffer[BUFFER_SIZE];
 
-      // Listen for requests from the parent
-      read(pipe_in[0], buffer, BUFFER_SIZE);
-      sscanf(buffer, "%d", &range);
+  // Listen for requests from the parent
+  read(pipe_in[0], buffer, BUFFER_SIZE);
+  sscanf(buffer, "%d", &range);
     
-      printf("Enter the number to substract: ");
-      scanf("%d", &dec);
-
-      result = range;
-
-      for(int i = 0; i < 10; i++){
-	result -= dec;
-	printf("%d", result);
-      }
-      
-      while(1)
-	{  
-	 
-	  result -=  dec; 
+  printf("Enter the number to substract: ");
+  scanf("%d", &dec);
  
-	  // Send the result back to the parent
-	  sprintf(buffer, "%d", result);
-	  // Write all the characters in the buffer, and also the null character at the end
-	  write(pipe_out[1], buffer, strlen(buffer) + 1);
-    }
-}
-// Finish with a negative number
-/*
-  if (number < 0)
-  {
-  break;
-  }
-  result = factorial(number);
+  result = range;
+
   // Send the result back to the parent
-  sprintf(buffer, "%lu", result);
+  sprintf(buffer, "%d", result);
   // Write all the characters in the buffer, and also the null character at the end
   write(pipe_out[1], buffer, strlen(buffer) + 1);
-  }
-  }
 
-  // Draw the line showing the progress of the counts
+  
+  while(1)
+    {  
+      
+      // Listen for requests from the parent
+      read(pipe_in[0], buffer, BUFFER_SIZE);
+      sscanf(buffer, "%d", &go);
+      
+      if(go > 0){
+	if(result > 0){
+	  result -=  dec; 
+	}
+	// Send the result back to the parent
+	sprintf(buffer, "%d", result);
+	// Write all the characters in the buffer, and also the null character at the end
+	write(pipe_out[1], buffer, strlen(buffer) + 1);
+
+	
+	go = 0;
+      }
+    }
+}
+
+// Draw the line showing the progress of the counts
 // Called at every loop
 // Will modify the string, adding '\' characters from the left
 //  and '/' characters fromt he right. 'X' characters are used
@@ -282,8 +286,30 @@ void countDown(int pipe_out[], int pipe_in[])
 // Use only pointer arithmetic to modify the string
 // Receives: the string, the size, and the counters for left and right
 // Return: nothing
+    
+void fill_line(char *line, int range){
+  for(int i = 0; i < range; i++){
+    *(line + i) = ' ';
+  }
+}
+
 void drawLine(char * line, int range, int count_up, int count_down)
 {
+  line = (char *) malloc(sizeof(char)*range);
 
+  fill_line(line, range);
+ 
+    for(int i = 0; i < count_up ; i++){
+      *(line + i) = '\\';
+    }
+    for(int i = 0; i < count_down ; i++){
+      if(*(line + (range - i)) == '\\'){
+	*(line + (range - i)) = 'X';
+      }else{
+	*(line + (range - i)) = '/';
+      }
+    }
+
+  printf("%s\n", line);
 }
-      */
+ 
