@@ -216,11 +216,19 @@ void countUp(int pipe_out[], int pipe_in[])
     read(pipe_in[0], buffer, BUFFER_SIZE);
     sscanf(buffer, "%d", &result);
     printf("%d - %d\n", resultp, result);
+    //draw the line for visual understanding
     drawLine(line, range, resultp, range - result);
-    //printf("%s\n", line);
+    //Check if the proces is done or need to add more
     if(resultp < range){   
       resultp = resultp + inc;
     }else if(result <= 0 && resultp >=range){
+      // Make the go variable negative so that the child can know the proces is donde
+      go = -1;
+      // Send the range to the child
+      sprintf(buffer, "%d", go);
+      // Write all the characters in the buffer, and also the null character at the end
+      write(pipe_out[1], buffer, strlen(buffer) + 1);
+      //finish parent proces 
       keep_going = 0;
     }
   }
@@ -244,10 +252,12 @@ void countDown(int pipe_out[], int pipe_in[])
   // Listen for requests from the parent
   read(pipe_in[0], buffer, BUFFER_SIZE);
   sscanf(buffer, "%d", &range);
-    
+
+  // Ask for the variable 
   printf("Enter the number to substract: ");
   scanf("%d", &dec);
- 
+
+  // Set the result as the top so we can start decrecing
   result = range;
 
   // Send the result back to the parent
@@ -262,7 +272,8 @@ void countDown(int pipe_out[], int pipe_in[])
       // Listen for requests from the parent
       read(pipe_in[0], buffer, BUFFER_SIZE);
       sscanf(buffer, "%d", &go);
-      
+
+      //Do this while the go varible is on 
       if(go > 0){
 	if(result > 0){
 	  result -=  dec; 
@@ -271,10 +282,14 @@ void countDown(int pipe_out[], int pipe_in[])
 	sprintf(buffer, "%d", result);
 	// Write all the characters in the buffer, and also the null character at the end
 	write(pipe_out[1], buffer, strlen(buffer) + 1);
-
-	
+	// Set teh go varible to 0 so that the proces need to wait for the parent to run again 
 	go = 0;
       }
+      // If go is negative finish proces
+	if (go < 0){
+	  break;
+	}
+	
     }
 }
 
@@ -286,7 +301,8 @@ void countDown(int pipe_out[], int pipe_in[])
 // Use only pointer arithmetic to modify the string
 // Receives: the string, the size, and the counters for left and right
 // Return: nothing
-    
+
+//Fill the line so that we dont have a segmentation fault
 void fill_line(char *line, int range){
   for(int i = 0; i < range; i++){
     *(line + i) = ' ';
@@ -295,21 +311,31 @@ void fill_line(char *line, int range){
 
 void drawLine(char * line, int range, int count_up, int count_down)
 {
+  //Declaration of the dinamic line
   line = (char *) malloc(sizeof(char)*range);
 
+  //fill the line 
   fill_line(line, range);
- 
-    for(int i = 0; i < count_up ; i++){
-      *(line + i) = '\\';
-    }
-    for(int i = 0; i < count_down ; i++){
-      if(*(line + (range - i)) == '\\'){
-	*(line + (range - i)) = 'X';
-      }else{
-	*(line + (range - i)) = '/';
-      }
-    }
 
+  //Chek if count up is not grather than the range so that we can have equal lines
+  if(count_up >= range){
+    count_up = range;
+  }
+  // Fill the array with the lines
+  for(int i = 0; i < count_up ; i++){
+    *(line + i) = '\\';
+  }
+  if(count_down >= range){
+    count_down = range;
+  }
+  for(int i = 0; i < count_down ; i++){
+    //If the space has already a line put a X
+    if(*(line + (range - i - 1)) == '\\'){
+      *(line + (range - i - 1)) = 'X';
+    }else{
+      *(line + (range - i - 1)) = '/';
+    }
+  }
+  
   printf("%s\n", line);
 }
- 

@@ -28,7 +28,7 @@ void drawLine(char * line, int range, int count_up, int count_down)
     for(int i = 0; i < count_up; i++){
       *(line + i) = '\\';
     }
-    for(int i = 0; i < count_down + 1; i++){
+    for(int i = 0; i < count_down; i++){
       if(*(line + (range - i)) == '\\'){
 	*(line + (range - i)) = 'X';
       }else{
