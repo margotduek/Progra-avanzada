@@ -87,6 +87,7 @@ void closePipes(int pipe_out[], int pipe_in[]);
 void countUp(int pipe_out[], int pipe_in[]);
 void countDown(int pipe_out[], int pipe_in[]);
 void drawLine(char * line, int range, int count_up, int count_down);
+void fill_line(char *line, int range);
 
 int main()
 {
