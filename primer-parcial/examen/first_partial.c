@@ -233,6 +233,8 @@ void countUp(int pipe_out[], int pipe_in[])
       keep_going = 0;
     }
   }
+  //free memory
+  free(line);
 
 }
 
