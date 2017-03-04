@@ -135,7 +135,7 @@ void waitForConnections(int server_fd)
       else if(pid > 0){
 	close(connection_fd);
 	counter++;
-	printf("here2\n");
+	//printf("here2\n");
 	continue;
       }
       else if(pid == 0)
@@ -143,16 +143,24 @@ void waitForConnections(int server_fd)
 	  char buf[100];
 
 	  counter++;
-	  printf("here 1\n");
+	  //printf("here 1\n");
 	  snprintf(buf, sizeof buf, "hi %d", counter);
-	  send(connection_fd, buf, strlen(buf), 0);
-	  close(connection_fd);
+	  //send(connection_fd, buf, strlen(buf), 0);
+
+
+	  // Identify the client
+	  // Get the ip address from the structure filled by accept
+	  inet_ntop(client_address.sin_family, &client_address.sin_addr, client_presentation, sizeof client_presentation);
+	  printf("Received connection from: %s : %d\n", client_presentation, client_address.sin_port);
+
+	  // Establish the communication
+	  communicationLoop(connection_fd);
+ 
+
+
+	  //close(connection_fd);
 	  break;  
 	}
-
-
-
-
           
       if ( connection_fd == -1 )
 	{
