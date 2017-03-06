@@ -23,7 +23,7 @@ void usage(char * program);
 void startServer(char * port);
 void waitForConnections(int server_fd);
 void communicationLoop(int connection_fd, char *client_presentation, int client_address_sin_port);
-void blackjack(int connection_fd);
+void blackjack(int connection_fd, char *client_presentation, int client_address_sin_port);
 
 
 int main(int argc, char * argv[])
@@ -157,10 +157,6 @@ void waitForConnections(int server_fd)
 
 	  // Establish the communication
 	  communicationLoop(connection_fd, client_presentation, client_address.sin_port );
- 
-
-
-	  //close(connection_fd);
 	  break;  
 	}
           
@@ -169,20 +165,11 @@ void waitForConnections(int server_fd)
 	  perror("ERROR: accept");
 	  exit(EXIT_FAILURE);
 	}
-      /*
-      // Identify the client
-      // Get the ip address from the structure filled by accept
-      inet_ntop(client_address.sin_family, &client_address.sin_addr, client_presentation, sizeof client_presentation);
-      printf("Received connection from: %s : %d\n", client_presentation, client_address.sin_port);
-
-      // Establish the communication
-      communicationLoop(connection_fd);
-      */    
     }
 }
 
 // Do the actual receiving and sending of data
-void communicationLoop(int connection_fd,  char *client_presentation, int client_address_sin_port){
+void communicationLoop(int connection_fd, char *client_presentation, int client_address_sin_port){
   char buffer[BUFFER_SIZE];
   int message_counter = 0;
   int chars_read;
@@ -215,7 +202,7 @@ void communicationLoop(int connection_fd,  char *client_presentation, int client
       // Clear the buffer
       bzero(buffer, BUFFER_SIZE);
 
-      blackjack(connection_fd);
+      blackjack(connection_fd,  client_presentation, client_address_sin_port);
     }else if(*buffer == '2'){
       sprintf(buffer, "That is sad :( ! I hope next round you can join us!");
       //sprintf(buffer, "Reply to message #%d\n", message_counter);
@@ -239,7 +226,7 @@ void communicationLoop(int connection_fd,  char *client_presentation, int client
   }
 }
 
-void blackjack(int connection_fd){
+void blackjack(int connection_fd, char *client_presentation, int client_address_sin_port){
   char buffer[BUFFER_SIZE];
   int message_counter = 0;
   int chars_read;
@@ -260,7 +247,7 @@ void blackjack(int connection_fd){
 
   const size_t types_count = sizeof(types) / sizeof(types[0]);
    
-  // Print the card choosed randomly  
+  // Print the card choosed randomly
   sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
   ///// SEND
   // Send a reply to the client
@@ -269,7 +256,7 @@ void blackjack(int connection_fd){
     exit(EXIT_FAILURE);
   }
 
-  // Print the second card choosed randomly 
+  // Print the card choosed randomly
   sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
   ///// SEND
   // Send a reply to the client
@@ -277,12 +264,46 @@ void blackjack(int connection_fd){
     perror("ERROR: send");
     exit(EXIT_FAILURE);
   }
-   // Print the second card choosed randomly 
-  sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
+
+  // Print the card choosed randomly
+  sprintf(buffer,"Do you want to stand (pres 1) or bust(pres 2)\n");
   ///// SEND
   // Send a reply to the client
   if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
     perror("ERROR: send");
     exit(EXIT_FAILURE);
   }
+
+  ///// RECV
+  // Read the request from the client
+  chars_read = recv(connection_fd, buffer, BUFFER_SIZE, 0);
+  // Error when reading
+  if ( chars_read == -1 ){
+    perror("ERROR: recv");
+    exit(EXIT_FAILURE);
+  }
+  // Connection finished
+  if ( chars_read == 0 ){
+    printf("Client disconnected\n");
+    // break;
+  }
+
+  message_counter++;
+  printf("The client %d message #%d: %s\n", client_address_sin_port, message_counter, buffer);
+
+  if(*buffer == '2'){
+    // Print the card choosed randomly
+    sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
+    ///// SEND
+    // Send a reply to the client
+    if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
+      perror("ERROR: send");
+      exit(EXIT_FAILURE);
+    }
+  } 
+  
 }
+
+
+
+

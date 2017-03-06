@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include <time.h>
 #include <netdb.h>
 
 #define SERVICE_PORT 8642
@@ -141,35 +141,33 @@ void communicationLoop(int connection_fd)
 
 void blackjack(int connection_fd){
   char buffer[BUFFER_SIZE];
-  // Clear the buffer
-  bzero(buffer, BUFFER_SIZE);
-
+  int chars_read;
+  time_t t;
+  const char *types [] = {"clubs", "hearts", "spades", "diamods"};
   
-  ///// RECV
-  // Read the request from the client
-  if ( recv(connection_fd, buffer, BUFFER_SIZE, 0) == -1 )
-    {
-      perror("ERROR: recv");
-      exit(EXIT_FAILURE);
-    }
-  printf("Dealer says: %s\n\n", buffer);
+  /* Intializes random number generator */
+  srand((unsigned) time(&t));
+  const size_t types_count = sizeof(types) / sizeof(types[0]);
+  
+  int first = rand() % 13;
+  int second = rand() % 13;
+  int third = 0;
+  int fourth = 0;
+  char *stay;
 
-  ///// RECV
-  // Read the request from the client
-  if ( recv(connection_fd, buffer, BUFFER_SIZE, 0) == -1 )
-    {
-      perror("ERROR: recv");
-      exit(EXIT_FAILURE);
-    }
-  printf("First card: %s\n", buffer);
+  printf("First card : %d %s\n", first,  types[rand() % types_count]);
+  printf("Second card : %d %s\n", second,  types[rand() % types_count]);
 
-  ///// RECV
-  // Read the request from the client
-  if ( recv(connection_fd, buffer, BUFFER_SIZE, 0) == -1 )
-    {
-      perror("ERROR: recv");
-      exit(EXIT_FAILURE);
-    }
-  printf("Second card: %s\n", buffer);
-
+  printf("Do you want to stand(pres 1)  or bust (pres 2)?");
+  scanf("%s", stay);
+ 
+  if(*stay == '1'){
+    //look_fot_the_winner();
+  }else if(*stay == '2' ){
+    third = rand() % 13;
+    printf("Second third : %d %s\n", third,  types[rand() % types_count]);
+  }else{
+    printf("That is not a valid option, sorry!\n");
+  }
+  
 }
