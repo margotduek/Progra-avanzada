@@ -1,10 +1,8 @@
 /*
-    Program for a simple chat server
-    Can only connect with one client at a time
+Margot Duek 
+A01021226
+Advanced programming 
 
-    Gilberto Echeverria
-    gilecheverria@yahoo.com
-    23/02/2017
 */
 
 #include <stdio.h>
@@ -23,7 +21,7 @@
 void usage(char * program);
 void startServer(char * port);
 void waitForConnections(int server_fd);
-void communicationLoop(int connection_fd);
+void communicationLoop(int connection_fd, char *client_presentation, int client_address_sin_port);
 
 int main(int argc, char * argv[])
 {
@@ -154,7 +152,7 @@ void waitForConnections(int server_fd)
 	  printf("Received connection from: %s : %d\n", client_presentation, client_address.sin_port);
 
 	  // Establish the communication
-	  communicationLoop(connection_fd);
+	  communicationLoop(connection_fd, client_presentation, client_address.sin_port );
  
 
 
@@ -167,7 +165,7 @@ void waitForConnections(int server_fd)
 	  perror("ERROR: accept");
 	  exit(EXIT_FAILURE);
 	}
-
+      /*
       // Identify the client
       // Get the ip address from the structure filled by accept
       inet_ntop(client_address.sin_family, &client_address.sin_addr, client_presentation, sizeof client_presentation);
@@ -175,11 +173,12 @@ void waitForConnections(int server_fd)
 
       // Establish the communication
       communicationLoop(connection_fd);
+      */    
     }
 }
 
 // Do the actual receiving and sending of data
-void communicationLoop(int connection_fd)
+void communicationLoop(int connection_fd,  char *client_presentation, int client_address_sin_port)
 {
   char buffer[BUFFER_SIZE];
   int message_counter = 0;
@@ -207,7 +206,7 @@ void communicationLoop(int connection_fd)
 	}
 
       message_counter++;
-      printf("The client message #%d: %s\n", message_counter, buffer);
+      printf("The client %s : %d message #%d: %s\n", client_presentation, client_address_sin_port, message_counter, buffer);
 
       // Pretend to take some time to attend the request
       //sleep(3);
