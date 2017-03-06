@@ -114,8 +114,6 @@ void waitForConnections(int server_fd)
   char client_presentation[INET_ADDRSTRLEN];
   int connection_fd;
 
-
-  
   int pid,new;
   static int counter=0;  
 
@@ -199,9 +197,7 @@ void communicationLoop(int connection_fd, char *client_presentation, int client_
     //sleep(3);
 
     if(*buffer == '1'){
-      // Clear the buffer
-      bzero(buffer, BUFFER_SIZE);
-
+     
       blackjack(connection_fd,  client_presentation, client_address_sin_port);
     }else if(*buffer == '2'){
       sprintf(buffer, "That is sad :( ! I hope next round you can join us!");
@@ -232,8 +228,19 @@ void blackjack(int connection_fd, char *client_presentation, int client_address_
   int chars_read;
   const char *types [] = {"clubs", "hearts", "spades", "diamods"};
   time_t t;
+  int dealer = 0;
+  int client;
 
-  sprintf(buffer, "You choosed to play blackjack, please bet your inicial fee! (5 changotickets) ");
+  srand((unsigned) time(&t));
+  const size_t types_count = sizeof(types) / sizeof(types[0]);  
+
+  int first =1 + rand() % 10;
+  int second = 1 + rand() % 10;
+  int third =1 + rand() % 10;
+  int fourth = 1 + rand() % 10;
+
+  bzero(buffer, BUFFER_SIZE);
+  sprintf(buffer, " You choosed to play blackjack, please bet your inicial fee! (5 changotickets)\n \n\n Fisrt card : %d %s \n Second card : %d %s \n ", first,  types[rand() % types_count], second,  types[rand() % types_count]);
   //sprintf(buffer, "Reply to message #%d\n", message_counter);
   ///// SEND
   // Send a reply to the client
@@ -242,38 +249,7 @@ void blackjack(int connection_fd, char *client_presentation, int client_address_
     exit(EXIT_FAILURE);
   }
 
-  /* Intializes random number generator */
-  srand((unsigned) time(&t));
-
-  const size_t types_count = sizeof(types) / sizeof(types[0]);
-   
-  // Print the card choosed randomly
-  sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
-  ///// SEND
-  // Send a reply to the client
-  if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
-    perror("ERROR: send");
-    exit(EXIT_FAILURE);
-  }
-
-  // Print the card choosed randomly
-  sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
-  ///// SEND
-  // Send a reply to the client
-  if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
-    perror("ERROR: send");
-    exit(EXIT_FAILURE);
-  }
-
-  // Print the card choosed randomly
-  sprintf(buffer,"Do you want to stand (pres 1) or bust(pres 2)\n");
-  ///// SEND
-  // Send a reply to the client
-  if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
-    perror("ERROR: send");
-    exit(EXIT_FAILURE);
-  }
-
+  bzero(buffer, BUFFER_SIZE);
   ///// RECV
   // Read the request from the client
   chars_read = recv(connection_fd, buffer, BUFFER_SIZE, 0);
@@ -282,26 +258,23 @@ void blackjack(int connection_fd, char *client_presentation, int client_address_
     perror("ERROR: recv");
     exit(EXIT_FAILURE);
   }
-  // Connection finished
-  if ( chars_read == 0 ){
-    printf("Client disconnected\n");
-    // break;
+
+  client = first + second;
+    
+  dealer = 15 +rand() % 15;
+    
+  if(dealer > 21 || client > dealer || client == 21){
+    sprintf(buffer,"Congratulations! you won! Dealer got %d, you got %d", dealer, client);
+  }else if(client > 21 || dealer > client){
+    sprintf(buffer,"Sorry ... you lose!Dealer got %d you got %d", dealer, client);
   }
-
-  message_counter++;
-  printf("The client %d message #%d: %s\n", client_address_sin_port, message_counter, buffer);
-
-  if(*buffer == '2'){
-    // Print the card choosed randomly
-    sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
-    ///// SEND
-    // Send a reply to the client
-    if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
-      perror("ERROR: send");
-      exit(EXIT_FAILURE);
-    }
-  } 
-  
+  ///// SEND
+  // Send a reply to the client
+  if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
+    perror("ERROR: send");
+    exit(EXIT_FAILURE);
+  }
+    
 }
 
 

@@ -17,8 +17,8 @@
 void usage(char * program);
 void connectToServer(char * address, char * port);
 void communicationLoop(int connection_fd);
-void blackjack(int connection_fd);
-
+int blackjack(int connection_fd);
+void look_fot_the_winner(int sum, int  connection_fd);
 
 int main(int argc, char * argv[])
 {
@@ -95,13 +95,13 @@ void connectToServer(char * address, char * port)
 void communicationLoop(int connection_fd)
 {
   char buffer[BUFFER_SIZE];
-
-  while (1)
+  int go  = 1;
+  while (go>0)
     {
 
      
       
-      printf("Hello! do you want to play this round? ( 1 for yes, 2 for no, empty to leave) : \n ");
+      printf("Hello! do you want to play this round? ( 1 for yes, 2 for no, empty to leave) : \n\n ");
       fgets(buffer, BUFFER_SIZE, stdin);
 
       // Finish the connection with a string containing only the '\n'
@@ -120,7 +120,21 @@ void communicationLoop(int connection_fd)
 	}
 
       if(*buffer == '1'){
-	blackjack(connection_fd);
+	// Clear the buffer
+	bzero(buffer, BUFFER_SIZE);
+
+	///// RECV
+	// Read the request from the client
+	if ( recv(connection_fd, buffer, BUFFER_SIZE, 0) == -1 )
+	  {
+	    perror("ERROR: recv");
+	    exit(EXIT_FAILURE);
+	  }
+	printf("Dealer says: %s\n", buffer);
+
+		
+	go = blackjack(connection_fd);
+	break;
       }
       // Clear the buffer
       bzero(buffer, BUFFER_SIZE);
@@ -134,12 +148,11 @@ void communicationLoop(int connection_fd)
 	}
       printf("Dealer says: %s\n", buffer);
       
-
     }
 }
 
 
-void blackjack(int connection_fd){
+int blackjack(int connection_fd){
   char buffer[BUFFER_SIZE];
   int chars_read;
   time_t t;
@@ -149,25 +162,62 @@ void blackjack(int connection_fd){
   srand((unsigned) time(&t));
   const size_t types_count = sizeof(types) / sizeof(types[0]);
   
-  int first = rand() % 13;
-  int second = rand() % 13;
   int third = 0;
   int fourth = 0;
-  char *stay;
-
-  printf("First card : %d %s\n", first,  types[rand() % types_count]);
-  printf("Second card : %d %s\n", second,  types[rand() % types_count]);
-
+  char stay;
+  int sum = 0;
+  /*
   printf("Do you want to stand(pres 1)  or bust (pres 2)?");
-  scanf("%s", stay);
+  // Clear the buffer
+  bzero(buffer, BUFFER_SIZE);
+  //fgets(stay, BUFFER_SIZE, stdin);
  
-  if(*stay == '1'){
-    //look_fot_the_winner();
-  }else if(*stay == '2' ){
-    third = rand() % 13;
-    printf("Second third : %d %s\n", third,  types[rand() % types_count]);
-  }else{
-    printf("That is not a valid option, sorry!\n");
+  stay = getchar();
+  int go = 1;
+  //while(go){
+    if(stay == '1'){
+      look_fot_the_winner(sum, connection_fd);
+    }else if(stay == '2' ){
+
+      third = 1 + rand() % 10;
+      printf("Next card : %d %s\n", third,  types[rand() % types_count]);
+      sum = third + fourth;
+      look_fot_the_winner(sum,  connection_fd);
+    }else if(stay == '0'){
+      printf("Leaving Ultimate Blackjack by Margot Duek\n");
+      return -1;
+    }
+    else{
+      printf("That is not a valid option, sorry!\n");
+      stay = getchar();
+    }
+    //  }*/
+      look_fot_the_winner(sum,  connection_fd);
+      return 0;
+}
+
+void look_fot_the_winner(int sum, int  connection_fd){
+  char buffer[BUFFER_SIZE];
+  char sumch[BUFFER_SIZE];
+  // Clear the buffer
+  bzero(buffer, BUFFER_SIZE);
+
+  sprintf(sumch, "%d", sum);
+  printf("%s", sumch);
+  ///// SEND
+  // Send a reply to the client
+  if ( send(connection_fd, &sum, strlen(buffer)+1, 0) == -1 ){
+    perror("ERROR: send");
+    exit(EXIT_FAILURE);
   }
+
   
+  ///// RECV
+  // Read the request from the client
+  if ( recv(connection_fd, buffer, BUFFER_SIZE, 0) == -1 ){
+    perror("ERROR: recv");
+    exit(EXIT_FAILURE);
+  }
+  printf("Dealer says: %s\n", buffer);
+      
 }
