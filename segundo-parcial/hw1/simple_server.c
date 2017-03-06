@@ -128,7 +128,12 @@ void waitForConnections(int server_fd)
       client_address_size = sizeof client_address;
       // Receive the data from the client and open a new socket connection
       connection_fd = accept(server_fd, (struct sockaddr *) &client_address, &client_address_size);
-      
+
+      /*
+	We make the fork so that every time someone else tryes to play the game they can 
+	if there is an error, we close the connection 
+	Otherwise, we have avarible named counter, that one counts the number of the proces that connected to the server 
+       */
       if ((pid = fork()) == -1){
 	close(connection_fd);
 	continue;
@@ -136,7 +141,6 @@ void waitForConnections(int server_fd)
       else if(pid > 0){
 	close(connection_fd);
 	counter++;
-	//printf("here2\n");
 	continue;
       }
       else if(pid == 0)
@@ -144,10 +148,7 @@ void waitForConnections(int server_fd)
 	  char buf[100];
 
 	  counter++;
-	  //printf("here 1\n");
 	  snprintf(buf, sizeof buf, "hi %d", counter);
-	  //send(connection_fd, buf, strlen(buf), 0);
-
 
 	  // Identify the client
 	  // Get the ip address from the structure filled by accept
@@ -259,7 +260,7 @@ void blackjack(int connection_fd){
 
   const size_t types_count = sizeof(types) / sizeof(types[0]);
    
-  // Print 5 random numbers from 0 to 49 
+  // Print the card choosed randomly  
   sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
   ///// SEND
   // Send a reply to the client
@@ -267,5 +268,21 @@ void blackjack(int connection_fd){
     perror("ERROR: send");
     exit(EXIT_FAILURE);
   }
-  
+
+  // Print the second card choosed randomly 
+  sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
+  ///// SEND
+  // Send a reply to the client
+  if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
+    perror("ERROR: send");
+    exit(EXIT_FAILURE);
+  }
+   // Print the second card choosed randomly 
+  sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
+  ///// SEND
+  // Send a reply to the client
+  if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
+    perror("ERROR: send");
+    exit(EXIT_FAILURE);
+  }
 }

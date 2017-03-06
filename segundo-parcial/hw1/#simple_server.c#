@@ -260,7 +260,16 @@ void blackjack(int connection_fd){
 
   const size_t types_count = sizeof(types) / sizeof(types[0]);
    
-  // Print 5 random numbers from 0 to 49 
+  // Print the card choosed randomly  
+  sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
+  ///// SEND
+  // Send a reply to the client
+  if ( send(connection_fd, buffer, strlen(buffer)+1, 0) == -1 ){
+    perror("ERROR: send");
+    exit(EXIT_FAILURE);
+  }
+
+  // Print the second card choosed randomly 
   sprintf(buffer,"%d %s\n", rand() % 13,  types[rand() % types_count]);
   ///// SEND
   // Send a reply to the client

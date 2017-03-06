@@ -152,5 +152,24 @@ void blackjack(int connection_fd){
       perror("ERROR: recv");
       exit(EXIT_FAILURE);
     }
-  printf("Dealer says: %s\n", buffer);
+  printf("Dealer says: %s\n\n", buffer);
+
+  ///// RECV
+  // Read the request from the client
+  if ( recv(connection_fd, buffer, BUFFER_SIZE, 0) == -1 )
+    {
+      perror("ERROR: recv");
+      exit(EXIT_FAILURE);
+    }
+  printf("First card: %s\n", buffer);
+
+  ///// RECV
+  // Read the request from the client
+  if ( recv(connection_fd, buffer, BUFFER_SIZE, 0) == -1 )
+    {
+      perror("ERROR: recv");
+      exit(EXIT_FAILURE);
+    }
+  printf("Second card: %s\n", buffer);
+
 }
