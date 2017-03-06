@@ -166,34 +166,9 @@ int blackjack(int connection_fd){
   int fourth = 0;
   char stay;
   int sum = 0;
-  /*
-  printf("Do you want to stand(pres 1)  or bust (pres 2)?");
-  // Clear the buffer
-  bzero(buffer, BUFFER_SIZE);
-  //fgets(stay, BUFFER_SIZE, stdin);
- 
-  stay = getchar();
-  int go = 1;
-  //while(go){
-    if(stay == '1'){
-      look_fot_the_winner(sum, connection_fd);
-    }else if(stay == '2' ){
-
-      third = 1 + rand() % 10;
-      printf("Next card : %d %s\n", third,  types[rand() % types_count]);
-      sum = third + fourth;
-      look_fot_the_winner(sum,  connection_fd);
-    }else if(stay == '0'){
-      printf("Leaving Ultimate Blackjack by Margot Duek\n");
-      return -1;
-    }
-    else{
-      printf("That is not a valid option, sorry!\n");
-      stay = getchar();
-    }
-    //  }*/
-      look_fot_the_winner(sum,  connection_fd);
-      return 0;
+  
+  look_fot_the_winner(sum,  connection_fd);
+  return 0;
 }
 
 void look_fot_the_winner(int sum, int  connection_fd){
