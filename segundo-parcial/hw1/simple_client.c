@@ -1,10 +1,7 @@
 /*
-    Program for a simple chat client
-    The server address is provided as arguments to the program
-
-    Gilberto Echeverria
-    gilecheverria@yahoo.com
-    26/02/2017
+    Margot Duek 
+    A01021226
+    Advanced Programming
 */
 
 #include <stdio.h>
@@ -20,10 +17,12 @@
 void usage(char * program);
 void connectToServer(char * address, char * port);
 void communicationLoop(int connection_fd);
+void blackjack(int connection_fd);
+
 
 int main(int argc, char * argv[])
 {
-  printf("\n=== CLIENT PROGRAM ===\n");
+  printf("\n=== WELCOME TO ULTIMAMATE BLACKJACK by Margot Duek  ===\n");
 
   if (argc != 3)
     usage(argv[0]);
@@ -99,13 +98,16 @@ void communicationLoop(int connection_fd)
 
   while (1)
     {
-      printf("Enter a message for the server (empty message to finish): ");
+
+     
+      
+      printf("Hello! do you want to play this round? ( 1 for yes, 2 for no, empty to leave) : \n ");
       fgets(buffer, BUFFER_SIZE, stdin);
 
       // Finish the connection with a string containing only the '\n'
       if (strlen(buffer) == 1)
 	{
-	  printf("Finishing the connection\n");
+	  printf("Leaving Ultimate Blackjack by Margot Duek\n");
 	  break;
 	}
 
@@ -117,6 +119,9 @@ void communicationLoop(int connection_fd)
 	  exit(EXIT_FAILURE);
 	}
 
+      if(*buffer == '1'){
+	blackjack(connection_fd);
+      }
       // Clear the buffer
       bzero(buffer, BUFFER_SIZE);
 
@@ -127,6 +132,25 @@ void communicationLoop(int connection_fd)
 	  perror("ERROR: recv");
 	  exit(EXIT_FAILURE);
 	}
-      printf("The server replied with: %s\n", buffer);
+      printf("Dealer says: %s\n", buffer);
+      
+
     }
+}
+
+
+void blackjack(int connection_fd){
+  char buffer[BUFFER_SIZE];
+  // Clear the buffer
+  bzero(buffer, BUFFER_SIZE);
+
+  
+  ///// RECV
+  // Read the request from the client
+  if ( recv(connection_fd, buffer, BUFFER_SIZE, 0) == -1 )
+    {
+      perror("ERROR: recv");
+      exit(EXIT_FAILURE);
+    }
+  printf("Dealer says: %s\n", buffer);
 }
