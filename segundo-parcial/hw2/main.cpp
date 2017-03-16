@@ -13,14 +13,18 @@ bool status = true;
 
 int main()
 {
+  //Rendering a 800 * 800 window
   sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
+  //creating a circle to put a texture to put jacos' image
   sf::CircleShape shape(50);
   sf::Texture texture;
   if (!texture.loadFromFile("jaco.png")){
     printf("No se cargó la imagen");
   }
+  //puting the jacos texture into a sprite
   sf::Sprite sprite;
   sprite.setTexture(texture);
+  //Center jaco in the middle of the window
   sprite.setPosition(sf::Vector2f(400, 400));
   int i = 0; 
 
@@ -44,20 +48,25 @@ int main()
 	  if (event.type == sf::Event::Closed)
 	    window.close();
 	}
-
+      //clear the window each time of the while
       window.clear();
+      // draw the sprite again 
       window.draw(sprite);
+      // display jacos' sprite again 
       window.display();
 
-	//sprite.rotate(i);
+     
       sprite.setPosition(sf::Vector2f(i, i*2));
+      // if status is false, then the program is in pause, check function stop and continue_
       if(status){
+	//if the image goes out of the window start again 
         if(i > 400){
           i = 0;    
         }
         if(i < -400){
           i = 400;
         }
+	// change direction, check function direction()
         if(dir){ 
           i++;
         }
@@ -71,7 +80,7 @@ int main()
 }
 
 
-
+//direction handler
 void direction(int x){
   alarm(5);
   signal(SIGALRM, direction);
@@ -81,9 +90,11 @@ void direction(int x){
     dir = true;
   }
 }
+//pause handler
 void stop(int y){
   status = false;
 }
+//continue handler 
 void continue_(int y){
   status = true;
 }
