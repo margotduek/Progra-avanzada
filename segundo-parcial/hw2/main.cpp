@@ -4,6 +4,12 @@
 #include <unistd.h>
 #include <signal.h>
 
+void direction(int x);
+void stop(int y);
+void continue_(int y);
+
+bool dir = true;
+bool status = true;
 
 int main()
 {
@@ -17,6 +23,19 @@ int main()
   sprite.setTexture(texture);
   sprite.setPosition(sf::Vector2f(400, 400));
   int i = 0; 
+
+  //Call handlers
+  signal(SIGINT, stop);
+  signal(SIGTSTP, continue_);
+  signal(SIGALRM, direction);
+  alarm(5);
+
+  //Ignore Signals
+  signal(SIGABRT,SIG_IGN);
+  signal(SIGFPE,SIG_IGN);
+  signal(SIGILL,SIG_IGN);
+  signal(SIGSEGV,SIG_IGN);
+
   while (window.isOpen())
     {
       sf::Event event;
@@ -32,11 +51,39 @@ int main()
 
 	//sprite.rotate(i);
       sprite.setPosition(sf::Vector2f(i, i*2));
-      if(i > 400){
-        i = 0;    
+      if(status){
+        if(i > 400){
+          i = 0;    
+        }
+        if(i < -400){
+          i = 400;
+        }
+        if(dir){ 
+          i++;
+        }
+        else if(!dir){
+          i--;
+        }
       }
-      i++;
-   }
-
+    }
+  
   return 0;
+}
+
+
+
+void direction(int x){
+  alarm(5);
+  signal(SIGALRM, direction);
+  if(dir == true){
+    dir = false;
+  }else{
+    dir = true;
+  }
+}
+void stop(int y){
+  status = false;
+}
+void continue_(int y){
+  status = true;
 }
