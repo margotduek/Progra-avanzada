@@ -1,0 +1,34 @@
+
+#include <SFML/Graphics.hpp>
+
+int main()
+{
+  sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
+  sf::CircleShape shape(50);
+  sf::Texture texture;
+  if (!texture.loadFromFile("jaco.png")){
+    printf("No se cargó la imagen");
+  }
+  sf::Sprite sprite;
+  sprite.setTexture(texture);
+  
+  while (window.isOpen())
+    {
+      sf::Event event;
+      while (window.pollEvent(event))
+	{
+	  if (event.type == sf::Event::Closed)
+	    window.close();
+	}
+
+      for(int i = 0; i < 360; i++){
+	sprite.rotate(i);
+	printf("%d", i);
+      }
+      window.clear();
+      window.draw(sprite);
+      window.display();
+    }
+
+  return 0;
+}
