@@ -1,0 +1,76 @@
+/*
+  Margot Duek Kalach 
+  Advanced programming 
+  A01021226
+  Second partial
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <time.h>
+
+// Function declarations
+void * start_slot(void * arg);
+
+char temp[6];
+
+int main(){
+  int status;
+  int f_th = 1;
+  int s_th = 2;
+  int th_th = 3;
+  
+  pthread_t first_slot, second_slot, third_slot;
+  status = pthread_create(&first_slot, NULL, &start_slot, &f_th);
+  if (status)
+    {
+      fprintf(stderr, "ERROR: pthread_create %d\n", status);
+      exit(EXIT_FAILURE);
+    }
+  printf("Created new thread \n");
+  status = pthread_create(&second_slot, NULL, &start_slot, &s_th);
+  if (status)
+    {
+      fprintf(stderr, "ERROR: pthread_create %d\n", status);
+      exit(EXIT_FAILURE);
+    }
+  printf("Created new thread \n");
+  status = pthread_create(&third_slot, NULL, &start_slot, &th_th);
+  if (status)
+    {
+      fprintf(stderr, "ERROR: pthread_create %d\n", status);
+      exit(EXIT_FAILURE);
+    }
+  printf("Created new thread \n");
+
+
+  // Wait for all other threads to finish
+  pthread_exit(NULL);
+  
+  
+  return 0;
+}
+
+
+
+void * start_slot(void * arg){
+  int num = *((int *)arg);
+  printf("num  %d\n", num);
+  
+  srand(time(NULL));
+  char chars[] = {'M', 'A', 'R', 'G', 'O', 'T'};
+  int stp = rand() * num;
+  printf("nu  %d\n", stp);
+  
+  int choosed = 0;
+  for( int i = 0; i < stp; i ++){
+    if(choosed > 5){
+      choosed = 0;
+    }
+    choosed ++;
+  }
+
+  printf("num is %d\n", choosed);
+  return NULL;
+}
