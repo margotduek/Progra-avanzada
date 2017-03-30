@@ -112,8 +112,13 @@ void * start_slot3(void * arg){
 void *mix_array(int num, char *chars){
   int x;
   int restarted = 0;
-  for(int i = 0; i < ARRAY_SIZE ; i++){
-
+  for(int i = 0; i < ARRAY_SIZE*num ; i+num){
+    if(x >= ARRAY_SIZE - 1){
+      x = x - ARRAY_SIZE -1;
+    }else if( x < ARRAY_SIZE){
+      x = i;
+    }
+    /*
     if( x < ARRAY_SIZE && restarted){
       x++;
     }
@@ -122,7 +127,7 @@ void *mix_array(int num, char *chars){
       restarted = 1;
     }else if(x < ARRAY_SIZE && !restarted){
       x = i + num;
-    }
+      }*/
     temp[i] = chars[x];
   }
   for(int i = 0; i < ARRAY_SIZE; i++){
@@ -136,7 +141,7 @@ void *user_interface(void *a){
   while (option >= 0){
     printf("\n\n press \n -1 to stop the game \n 21 (our lucky unmber) to watch your slots ");
     scanf("%d", &option);
-    if(option >= 21){
+    if(option > 20){
       pthread_mutex_lock(&mutex_1);      
       for(int i = 0; i < ARRAY_SIZE; i++){
 	printf("|  %c  |  %c  |  %c  |\n", chars1[i], chars2[i], chars3[i]);
