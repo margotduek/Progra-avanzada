@@ -75,33 +75,37 @@ int main(){
 
 void * start_slot1(void * arg){
   int num = *((int *)arg);
-
-  // Lock before the critical section
-  pthread_mutex_lock(&mutex_1);
-  mix_array(num, chars1);
-  // Unlock after the task is completed
-  pthread_mutex_unlock(&mutex_1);
+  while(num > 0){
+    // Lock before the critical section
+    pthread_mutex_lock(&mutex_1);
+    mix_array(num, chars1);
+    // Unlock after the task is completed
+    pthread_mutex_unlock(&mutex_1);
+  }
   return NULL;
 }
 
 void * start_slot2(void * arg){
   int num = *((int *)arg);
-
-  // Lock before the critical section
-  pthread_mutex_lock(&mutex_1);
-  mix_array(num, chars2);
-  // Unlock after the task is completed
-  pthread_mutex_unlock(&mutex_1);
+  while(num > 0){
+    // Lock before the critical section
+    pthread_mutex_lock(&mutex_1);
+    mix_array(num, chars2);
+    // Unlock after the task is completed
+    pthread_mutex_unlock(&mutex_1);
+  }
   return NULL;
 }
 
 void * start_slot3(void * arg){
   int num = *((int *)arg);
-  // Lock before the critical section
-  pthread_mutex_lock(&mutex_1);
-  mix_array(num, chars3);
-  // Unlock after the task is completed
-  pthread_mutex_unlock(&mutex_1);
+  while(num > 0){
+    // Lock before the critical section
+    pthread_mutex_lock(&mutex_1);
+    mix_array(num, chars3);
+    // Unlock after the task is completed
+    pthread_mutex_unlock(&mutex_1);
+  }
   return NULL;
 }
 
@@ -133,12 +137,17 @@ void *user_interface(void *a){
     printf("\n\n press \n -1 to stop the game \n 21 (our lucky unmber) to watch your slots ");
     scanf("%d", &option);
     if(option >= 21){
+      pthread_mutex_lock(&mutex_1);      
       for(int i = 0; i < ARRAY_SIZE; i++){
 	printf("|  %c  |  %c  |  %c  |\n", chars1[i], chars2[i], chars3[i]);
       }
-      start_slot1(&f_th);
-      start_slot2(&s_th);
-      start_slot3(&th_th);
+      // Unlock after the task is completed
+      pthread_mutex_unlock(&mutex_1);
+      
+    }else if(option < 0){
+      start_slot1(&option);
+      start_slot2(&option);
+      start_slot3(&option);
     }
   }
 
