@@ -121,8 +121,9 @@ void game_of_life(int ** matrix, int ** game,  int rows, int cols){
   int i, j;
   int lbits = 0;
 
+
   //Paralelize the for so that we can have a better performance
-  #pragma omp parallel for default(none), private(j, cols), shared(matrix, game, lbits , rows, i)
+  #pragma omp parallel for default(none), private(j, i, lbits), shared(matrix, game, rows, cols)
   for(i = 0; i < rows; i++){
     for(j = 0; j < cols; j++){
       //there are 8 ifs to check how many neibourrs are alive
