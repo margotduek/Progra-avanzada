@@ -1,5 +1,5 @@
 /*
-Margot Duek 
+Margot Duek
 Turned picture
 30/01/2017
 Advanced programming
@@ -10,14 +10,12 @@ Advanced programming
 #include "turn_pic.h"
 #include <stdlib.h>
 
-
-
 int main(){
   struct matrix picture;
   picture.cols = get_cols();
   picture.rows = get_rows();
   picture.mat = create_matrix(picture.rows, picture.cols);
-  read_file(picture.mat, picture.cols, picture.rows); 
+  read_file(picture.mat, picture.cols, picture.rows);
   turn_picture(picture.mat, picture.rows, picture.cols);
   export_matrix(picture.mat, picture.rows, picture.cols);
   free_matrix(picture.mat, picture.rows);
@@ -54,7 +52,7 @@ int get_rows(){
 
 //Function to read a file and store it on a matrix
 void read_file(int **matrix, int cols, int rows){
-  // Opening a file for reading 
+  // Opening a file for reading
   FILE *a = fopen( "skull.ppm", "r");
   char buff[255];
   fgets(buff, 255, a);
@@ -84,7 +82,7 @@ int ** create_matrix(int rows, int cols)
 }
 
 
-//Function to fill a matrix 
+//Function to fill a matrix
 void fillRandomMatrix(int ** matrix, int rows, int cols)
 {
   int i, j;
@@ -109,7 +107,7 @@ void turn_picture(int ** matrix, int rows, int cols){
   }
 }
 
-//Function to export a mmatrix to a ppm file 
+//Function to export a mmatrix to a ppm file
 void export_matrix(int **matrix, int rows, int cols){
   int i, j;
   FILE *turned;
@@ -146,11 +144,11 @@ void print_matrix(int ** matrix, int rows, int cols){
 //Function to free the space we alocated with create_matrix()
 void free_matrix(int ** matrix, int rows)
 {
-  
+
     int i;
     for (i = 0; i < rows; i++) {
         free(matrix[i]);
     }
-  
+
   free(matrix);
 }
