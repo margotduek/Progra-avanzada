@@ -41,6 +41,10 @@ int main(int argc, char **argv){
   //If you want to print the matrix in "1" and "0" uncomente the following two lines
   //print_matrix(life.mat, life.rows, life.cols);
   //print_matrix(game.mat, life.rows, life.cols);
+
+  free_matrix(life.mat, life.rows);
+  free_matrix(game.mat, game.rows);
+
   return 0;
 }
 
@@ -120,7 +124,6 @@ void fillRandomMatrix(int ** matrix, int rows, int cols)
 void game_of_life(int ** matrix, int ** game,  int rows, int cols){
   int i, j;
   int lbits = 0;
-
 
   //Paralelize the for so that we can have a better performance
   #pragma omp parallel for default(none), private(j, i, lbits), shared(matrix, game, rows, cols)
@@ -216,4 +219,17 @@ void matrix_to_new (int ** matrix, int ** game, int rows, int cols){
        matrix[i][j] = game[i][j];
     }
   }
+}
+
+
+//Function to free the space we alocated with create_matrix()
+void free_matrix(int ** matrix, int rows)
+{
+
+    int i;
+    for (i = 0; i < rows; i++) {
+        free(matrix[i]);
+    }
+
+  free(matrix);
 }
