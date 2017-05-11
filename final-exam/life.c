@@ -15,10 +15,17 @@ Advanced programming
 int image_counter = 0;
 
 int main(int argc, char **argv){
+  if(argc < 3){
+    printf("Usage: \n  ./life iterations file\n" );
+    return 0;
+  }
+
   //Recieves the name of the file as an argument
 	char * fileName = argv[2];
   //Recives the number of iterations
   int noiterations = atoi(argv[1]);
+
+
   struct matrix life;
   struct matrix game;
   //We get the columns, the rows, create the matrix and fill the matrix with the text
