@@ -213,7 +213,6 @@ void export_matrix(int **matrix, int rows, int cols){
 //Function to copy the matrix
 void matrix_to_new (int ** matrix, int ** game, int rows, int cols){
   int i, j;
-  int data = 1;
   for (i=0; i<rows; i++){
     for (j=0; j<cols; j++){
        matrix[i][j] = game[i][j];
